@@ -17,8 +17,9 @@ import org.apache.commons.net.telnet.TelnetClient;
 public class RouterAPIs {
 
 	private static RouterAPIs RouterAPI;
+	public static String ResponseCommand;
 	private String prompt = "#";
-	
+
 	TelnetClient telnetClient = new TelnetClient();
 	InputStream inRouter = null;
 	PrintStream outRouter = null;
@@ -68,7 +69,7 @@ public class RouterAPIs {
 			readUntil("Password: ", router.getIn());
 			write(router.getPassWord(), router.getOut());
 			readUntil(prompt, router.getIn());
-
+			ResponseCommand = "";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -96,6 +97,7 @@ public class RouterAPIs {
 			ch = (char) in.read();
 			while (true) {
 				System.out.print(ch);
+				ResponseCommand = ResponseCommand + ch;
 				sb.append(ch);
 				if (ch == lastChar) {
 					if (sb.toString().endsWith(pattern)) {
@@ -131,6 +133,7 @@ public class RouterAPIs {
 			ch = (char) in.read();
 			while (true) {
 				sb.append(ch);
+				ResponseCommand = ResponseCommand + ch;
 				if (ch == lastChar) {
 					if (sb.toString().endsWith(pattern)) {
 						return sb.toString();
@@ -157,6 +160,7 @@ public class RouterAPIs {
 			out.println(value);
 			out.flush();
 			System.out.println(value);
+			// ResponseCommand=ResponseCommand+value;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

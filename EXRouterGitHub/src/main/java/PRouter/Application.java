@@ -26,7 +26,7 @@ public class Application {
 
 		SpringApplication.run(Application.class, args);
 		
-		
+		/*
 		RouterAPIs.getInstance().connect();
 		RouterAPIs.getInstance().sendCommand("sh run");
 		RouterAPIs.getInstance().sendCommand("config t");
@@ -36,7 +36,7 @@ public class Application {
 		RouterAPIs.getInstance().sendCommand("exit");
 		RouterAPIs.getInstance().sendCommand("exit");
 		RouterAPIs.getInstance().sendCommand("sh run");
-		RouterAPIs.getInstance().disconnect();
+		RouterAPIs.getInstance().disconnect();*/
 
 	}
 }
