@@ -33,17 +33,33 @@ public class ServicApp {
 		RouterAPIs.getInstance().connect();
 		RouterAPIs.getInstance().sendCommand("show ip interface brief");
 		RouterAPIs.getInstance().disconnect();
-		
-		
-		String RCommand=RouterAPIs.ResponseCommand;
 
-		RCommand=RCommand.replaceAll("( )+"," ");
-		String []Command=RCommand.split(" ");
+		String RCommand = RouterAPIs.ResponseCommand;
+
+		RCommand = RCommand.replaceAll("( )+", " ");
+		String[] Command = RCommand.split("\n");
 		
-		for(int i=1;i<Command.length;i++)
-		System.out.print(Command[i]+"kk");
+		String Int_IP = "";
+		for (int i = 2; i < Command.length - 1; i++) {
+			int n = 0;
+			for (int j = 0; i < Command[i].length(); j++) {
+
+				if (Command[i].charAt(j) == ' ' && n == 1)
+					break;
+				else if (Command[i].charAt(j) == ' ' && n == 0)
+					n = 1;
+
+				Int_IP = Int_IP + Command[i].charAt(j);
+			}
+			Int_IP = Int_IP +"\n";
+		}
+
 		
-		return RCommand;
+		String[] SInt_IP = Int_IP.split("\n");
+		for (int i = 0; i < SInt_IP.length ; i++) 
+		System.out.println(SInt_IP[i]);
+		
+		return Int_IP;
 	}
 
 	public String ServiceMessage() {
