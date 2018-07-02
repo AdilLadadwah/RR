@@ -133,7 +133,7 @@ public class RouterAPIs {
 			ch = (char) in.read();
 			while (true) {
 				sb.append(ch);
-				ResponseCommand = ResponseCommand + ch;
+				//ResponseCommand = ResponseCommand + ch;
 				if (ch == lastChar) {
 					if (sb.toString().endsWith(pattern)) {
 						return sb.toString();

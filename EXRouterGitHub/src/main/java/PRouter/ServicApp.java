@@ -31,10 +31,19 @@ public class ServicApp {
 	public String Interfaces() throws SocketException, IOException {
 
 		RouterAPIs.getInstance().connect();
-		RouterAPIs.getInstance().sendCommand("sh Version");
+		RouterAPIs.getInstance().sendCommand("show ip interface brief");
 		RouterAPIs.getInstance().disconnect();
+		
+		
+		String RCommand=RouterAPIs.ResponseCommand;
 
-		return RouterAPIs.ResponseCommand;
+		RCommand=RCommand.replaceAll("( )+"," ");
+		String []Command=RCommand.split(" ");
+		
+		for(int i=1;i<Command.length;i++)
+		System.out.print(Command[i]+"kk");
+		
+		return RCommand;
 	}
 
 	public String ServiceMessage() {
