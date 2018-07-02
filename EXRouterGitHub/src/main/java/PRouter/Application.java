@@ -26,6 +26,8 @@ public class Application {
 
 		SpringApplication.run(Application.class, args);
 		
+		System.out.println("llllllllll");
+		
 		RouterAPIs.getInstance().connect();
 		RouterAPIs.getInstance().sendCommand("sh run");
 		RouterAPIs.getInstance().sendCommand("config t");
