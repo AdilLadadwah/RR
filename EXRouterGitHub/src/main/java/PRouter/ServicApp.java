@@ -28,38 +28,35 @@ public class ServicApp {
 	}
 
 	@RequestMapping("/Interfaces")
-	public String Interfaces() throws SocketException, IOException {
+	public String[] Interfaces() throws SocketException, IOException {
 
 		RouterAPIs.getInstance().connect();
 		RouterAPIs.getInstance().sendCommand("show ip interface brief");
 		RouterAPIs.getInstance().disconnect();
 
-		String RCommand = RouterAPIs.ResponseCommand;
+		RouterAPIs.ResponseCommand = RouterAPIs.ResponseCommand.replaceAll("( )+", " ");
+		String[] RCommand1 = RouterAPIs.ResponseCommand.split("\n");
 
-		RCommand = RCommand.replaceAll("( )+", " ");
-		String[] Command = RCommand.split("\n");
-		
 		String Int_IP = "";
-		for (int i = 2; i < Command.length - 1; i++) {
+		for (int i = 1; i < RCommand1.length - 1; i++) {
 			int n = 0;
-			for (int j = 0; i < Command[i].length(); j++) {
+			for (int j = 0; i < RCommand1[i].length(); j++) {
 
-				if (Command[i].charAt(j) == ' ' && n == 1)
+				if (RCommand1[i].charAt(j) == ' ' && n == 1)
 					break;
-				else if (Command[i].charAt(j) == ' ' && n == 0)
+				else if (RCommand1[i].charAt(j) == ' ' && n == 0)
 					n = 1;
 
-				Int_IP = Int_IP + Command[i].charAt(j);
+				Int_IP = Int_IP + RCommand1[i].charAt(j);
 			}
-			Int_IP = Int_IP +"\n";
+			Int_IP = Int_IP + "\n";
 		}
 
-		
 		String[] SInt_IP = Int_IP.split("\n");
-		for (int i = 0; i < SInt_IP.length ; i++) 
-		System.out.println(SInt_IP[i]);
-		
-		return Int_IP;
+		for (int i = 0; i < SInt_IP.length; i++)
+			System.out.print("\n" + SInt_IP[i]);
+
+		return SInt_IP;
 	}
 
 	public String ServiceMessage() {
