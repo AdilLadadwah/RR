@@ -53,8 +53,23 @@ public class ServicApp {
 		}
 
 		String[] SInt_IP = Int_IP.split("\n");
+		
+		System.out.print("\nInterface \t\t IP-Address");
+		
 		for (int i = 0; i < SInt_IP.length; i++)
 			System.out.print("\n" + SInt_IP[i]);
+		
+		String[] Interface =new String[SInt_IP.length];	
+		String[] IP = new String[SInt_IP.length];
+		String[] INTER_IP= new String[2];
+		
+		for (int i = 0; i < SInt_IP.length; i++)
+			
+		{
+			INTER_IP = SInt_IP[i].split(" ", 2);
+			Interface[i]=INTER_IP[0];
+			IP[i]=INTER_IP[1];
+		}
 
 		return SInt_IP;
 	}
