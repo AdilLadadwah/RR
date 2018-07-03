@@ -24,7 +24,7 @@ public class RouterAPIs {
 	InputStream inRouter = null;
 	PrintStream outRouter = null;
 	String PassWord = "lab";
-	String HostName = "10.63.10.206";
+	String HostName = "";
 
 	Router router = new Router(telnetClient, inRouter, outRouter, PassWord, HostName);
 
@@ -48,15 +48,18 @@ public class RouterAPIs {
 	 * This function represent method to connect for router by using Telnet and
 	 * after call this function you can send command line for router
 	 * 
+	 * @param iP
+	 * 
 	 * @param Router
 	 *            Object
 	 * @throws SocketException
 	 * @throws IOException
 	 * 
 	 */
-	public void connect() throws SocketException, IOException {
+	public void connect(String IP) throws SocketException, IOException {
 		try {
 			int remoteport = 23;
+			router.setHostName(IP);
 			router.getTelnet().connect(router.getHostName(), remoteport);
 			router.setIn(router.getTelnet().getInputStream());
 			router.setOut(new PrintStream(router.getTelnet().getOutputStream()));
@@ -133,7 +136,7 @@ public class RouterAPIs {
 			ch = (char) in.read();
 			while (true) {
 				sb.append(ch);
-				//ResponseCommand = ResponseCommand + ch;
+				// ResponseCommand = ResponseCommand + ch;
 				if (ch == lastChar) {
 					if (sb.toString().endsWith(pattern)) {
 						return sb.toString();
@@ -160,7 +163,7 @@ public class RouterAPIs {
 			out.println(value);
 			out.flush();
 			System.out.println(value);
-			// ResponseCommand=ResponseCommand+value;
+			ResponseCommand = ResponseCommand + value + "\n";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
