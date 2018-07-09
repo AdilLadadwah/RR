@@ -60,6 +60,32 @@ public class ServicApp {
 		return RouterAPIs.ResponseCommand;
 	}
 
+	@RequestMapping("/InstallVersion")
+	public String InstallVersion() throws SocketException, IOException {
+
+		// RouterAPIs.getInstance().connect();
+		RouterAPIs.ResponseCommand = "";
+		RouterAPIs.getInstance().sendCommand("sh Version");
+		// RouterAPIs.getInstance().disconnect();
+		
+		String Install="";
+
+		return Install;
+	}
+	
+	@RequestMapping("/ConfigRunning")
+	public String ConfigRunning() throws SocketException, IOException {
+
+		// RouterAPIs.getInstance().connect();
+		RouterAPIs.ResponseCommand = "";
+		RouterAPIs.getInstance().sendCommand("sh Run");
+		// RouterAPIs.getInstance().disconnect();
+		
+
+		return RouterAPIs.ResponseCommand;
+	}
+	
+	
 	/**
 	 * Show Interfaces of router
 	 * 

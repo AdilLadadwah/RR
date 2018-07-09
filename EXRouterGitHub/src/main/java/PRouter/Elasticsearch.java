@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
@@ -44,12 +45,16 @@ public class Elasticsearch {
 		json.put("postDate",new Date());
 		json.put("message","trying out Elasticsearch");*/
 		
+		
+		
 		/*
 		String jso = "{" +
 		        "\"user\":\"kimchy\"," +
 		        "\"postDate\":\"2013-01-30\"," +
 		        "\"message\":\"trying out Elasticsearch\"" +
 		    "}";
+
+
 
 		IndexResponse response = client.prepareIndex("twitter", "tweet", "1")
 
@@ -64,45 +69,55 @@ public class Elasticsearch {
 		// Version (if it's the first time you index this document, you will get: 1)
 		long _version = response.getVersion();
 		// isCreated() is true if the document is a new one, false if it has been updated
-		boolean created = response.isCreated();
-		
-		System.out.println("\\n+++++++++++++++++++\\n");
-		
+		boolean created = response.isCreated();	
+		System.out.println("\\n+++++++++++++++++++\\n");	
 		System.out.println(_index+" & "+_type+" & "+_id+" & "+_version+" & "+created );*/
 		
 
 		//DeleteResponse responsee = client.prepareDelete("twitter", "tweet", "1").get();
 		//System.out.println(responsee.getIndex()+" & "+responsee.getType()+" & "+responsee.getId()+" & "+responsee.getVersion() );
 		
-		//GetResponse responsse = client.prepareGet("twitter", "tweet", "1").get();
-		 //System.out.println(responsse.getIndex()+" & "+responsse.getType()+" & "+responsse.getId()+" & "+responsse.getVersion() );
-		//String h=(String) responsse.getField("user").getValue();
-		//System.out.println(h);
 		
-		 //String h=(String) responsse.getField("postDate").getValue();
-		//System.out.println(h);
+		
+		/*GetResponse responsse = client.prepareGet("twitter", "tweet", "1").get();
+		System.out.println(responsse.getIndex()+" & "+responsse.getType()+" & "+responsse.getId()+" & "+responsse.getVersion() );
+		System.out.println(responsse.getSourceAsString());*/
+
 		
 		
 		/*QueryBuilder matchAllQuery = QueryBuilders.matchAllQuery();
-
-		System.out.println(matchAllQuery);
-		
+		System.out.println(matchAllQuery);		
 		SearchResponse response = client.prepareSearch("twitter")
 		        .setTypes("tweet")
 		        .setQuery(matchAllQuery)                 // Query    // Filter
 		        .setFrom(0).setSize(60).setExplain(true)
-		        .get();
-		
+		        .get();	
 		System.out.println(response);*/
-		/*XContentBuilder builder = XContentFactory.jsonBuilder();
-				
 		
+		
+		
+		/*XContentBuilder builder = XContentFactory.jsonBuilder();			
 		UpdateRequest updateRequest = new UpdateRequest("twitter", "tweet", "1")
-		        .doc(builder.startObject().field("user", "adil").endObject());
+		        .doc(builder.startObject().field("user", "MK").endObject());
 		client.update(updateRequest).get();
-	
-		GetResponse responssee = client.prepareGet("twitter", "tweet", "1").get();*/
 		
+	
+		TimeUnit.SECONDS.sleep(10);
+		
+		responsse = client.prepareGet("twitter", "tweet", "1").get();
+		System.out.println(responsse.getIndex()+" & "+responsse.getType()+" & "+responsse.getId()+" & "+responsse.getVersion() );
+		System.out.println(responsse.getSourceAsString());
+		
+		
+		matchAllQuery = QueryBuilders.matchAllQuery();
+		System.out.println(matchAllQuery);		
+		 response = client.prepareSearch("twitter")
+		        .setTypes("tweet")
+		        .setQuery(matchAllQuery)                 // Query    // Filter
+		        .setFrom(0).setSize(60).setExplain(true)
+		        .get();	
+		 System.out.println(response);*/
+	
 	
 		        
 		// on shutdown
