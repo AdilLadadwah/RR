@@ -2,11 +2,9 @@ package PRouter;
 
 import java.io.IOException;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,30 +57,26 @@ public class ServicApp {
 		return Respons;
 	}
 
-	
 	@RequestMapping("/InstallVersion")
 	public String InstallVersion() throws SocketException, IOException {
 
 		// RouterAPIs.getInstance().connect();
 		String Respons = RouterAPIs.getInstance().getInstallVersion();
 		// RouterAPIs.getInstance().disconnect();
-		
-
 
 		return Respons;
 	}
-	
+
 	@RequestMapping("/ConfigRunning")
 	public String ConfigRunning() throws SocketException, IOException {
 
 		// RouterAPIs.getInstance().connect();
-		String Respons=  RouterAPIs.getInstance().getConfigRunning();
+		String Respons = RouterAPIs.getInstance().getConfigRunning();
 		// RouterAPIs.getInstance().disconnect();
-		
+
 		return Respons;
 	}
-	
-	
+
 	/**
 	 * Show Interfaces of router
 	 * 
@@ -96,11 +90,11 @@ public class ServicApp {
 		// Send command for router
 		// RouterAPIs.getInstance().connect();
 
-		List<String> Interfaces=RouterAPIs.getInstance().getInterfaces();
+		List<String> Interfaces = RouterAPIs.getInstance().getInterfaces();
 		// RouterAPIs.getInstance().disconnect();
 
 		// Get the response and get from it Interfaces and IP
-		
+
 		return Interfaces;
 	}
 
@@ -110,14 +104,14 @@ public class ServicApp {
 		// Send command for router
 		// RouterAPIs.getInstance().connect();
 
-		List<String> IP=RouterAPIs.getInstance().getIP();
+		List<String> IP = RouterAPIs.getInstance().getIP();
 		// RouterAPIs.getInstance().disconnect();
 
 		// Get the response and get from it Interfaces and IP
-		
+
 		return IP;
 	}
-	
+
 	/**
 	 * Show Version of Interfaces and their IP
 	 * 
@@ -145,10 +139,13 @@ public class ServicApp {
 	 * @return
 	 * @throws SocketException
 	 * @throws IOException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 
 	@RequestMapping(method = RequestMethod.POST, value = "/addInt")
-	public String addIP_Int(@RequestBody String Interface) throws SocketException, IOException {
+	public String addIP_Int(@RequestBody String Interface)
+			throws SocketException, IOException, InterruptedException, ExecutionException {
 
 		RouterAPIs.ResponseCommand = "";
 
@@ -170,6 +167,8 @@ public class ServicApp {
 		Interfaces_IP();
 		addResponse = addResponse + RouterAPIs.ResponseCommand + "\n";
 
+		Elasticsearch.getInstance().update();
+
 		return addResponse;
 	}
 
@@ -179,14 +178,25 @@ public class ServicApp {
 
 	}
 
-	@RequestMapping("/insert")
+	@RequestMapping("/Insert")
 	public String insert() throws SocketException, IOException {
 
 		Elasticsearch.getInstance().insert();
-		
-		return "Good";
+
+		return "The Insertion  Is Successfully";
 	}
-	
-	
-	
+
+	@RequestMapping("/InsertRouter")
+	public void InsertRouter(Router router) {
+
+		System.out.println(router.getRouterName());
+		System.out.println(router.getIP());
+		System.out.println(router.getInterfaceIP());
+		System.out.println(router.getVersion());
+		System.out.println(router.getInstallVersion());
+		System.out.println(router.getDate());
+		System.out.println(router.getConfigRunning());
+
+	}
+
 }

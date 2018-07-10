@@ -49,7 +49,7 @@ public class RouterAPIs {
 		}
 		return RouterAPI;
 	}
-	
+
 	public RouterOperation getRouterOperation() {
 		return router;
 	}
@@ -223,7 +223,9 @@ public class RouterAPIs {
 
 		ResponseCommand = "";
 		sendCommand("sh Version");
-		return ResponseCommand;
+		String Response[] = ResponseCommand.split("-", 2);
+		System.out.println(Response[0]);
+		return Response[0].substring(11);
 	}
 
 	public String getConfigRunning() {
