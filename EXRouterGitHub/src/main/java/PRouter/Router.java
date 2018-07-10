@@ -2,6 +2,14 @@ package PRouter;
 
 import java.util.Date;
 
+/**
+ * 
+ * @author Adil M Ladadwah
+ *
+ *         This class represent object Router and include Router Name and
+ *         Interface with IP , Version and Date last edited on router and
+ *         Configuration Running for router name for router
+ */
 public class Router {
 
 	private String RouterName;
@@ -12,6 +20,18 @@ public class Router {
 	private Date date;
 	private String ConfigRunning;
 
+	/**
+	 * This function represent method to create object of Router with these
+	 * attributes
+	 * 
+	 * @param routerName
+	 * @param iP
+	 * @param interfaceIP
+	 * @param version
+	 * @param installVersion
+	 * @param date
+	 * @param configRunning
+	 */
 	public Router(String routerName, String iP, String interfaceIP, String version, String installVersion, Date date,
 			String configRunning) {
 		RouterName = routerName;
@@ -22,6 +42,12 @@ public class Router {
 		this.date = date;
 		ConfigRunning = configRunning;
 	}
+
+	/**
+	 * These functions represent methods to get and set attributes of object of
+	 * Router
+	 * 
+	 */
 
 	public String getRouterName() {
 		return RouterName;

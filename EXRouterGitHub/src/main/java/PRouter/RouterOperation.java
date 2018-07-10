@@ -8,9 +8,9 @@ import org.apache.commons.net.telnet.TelnetClient;
  * 
  * @author Adil M Ladadwah
  * 
- *         This class represent object Router and include TelnetClient , input
- *         from router, output to router, passWord to router and host name for
- *         router
+ *         This class represent object Router Operation and include TelnetClient
+ *         , input from router, output to router, passWord to router and host
+ *         name for router
  *
  */
 public class RouterOperation {
@@ -24,20 +24,14 @@ public class RouterOperation {
 	/**
 	 * This function represent method to create object of Router without attributes
 	 * 
-	 * @param telnet
-	 * @param in
-	 * @param out
-	 * @param passWord
-	 * @param hostName
-	 * 
 	 */
 	public RouterOperation() {
 
 	}
 
 	/**
-	 * This function represent method to create object of Router with these
-	 * attributes
+	 * This function represent method to create object of Router Operation with
+	 * these attributes
 	 * 
 	 * @param telnet
 	 * @param in
@@ -57,7 +51,7 @@ public class RouterOperation {
 
 	/**
 	 * These functions represent methods to get and set attributes of object of
-	 * Router
+	 * Router Operation
 	 * 
 	 */
 

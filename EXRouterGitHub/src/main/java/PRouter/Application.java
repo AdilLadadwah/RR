@@ -12,7 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 
  *         This class represent main class for project, this project is
  *         springBoot Application use to display message and connect router
- *         using telnet protocol, send command and change IP address for router
+ *         using TelNet protocol, send command and change IP address for router
+ *         and store data of router using ElasicSearch.
  *
  */
 

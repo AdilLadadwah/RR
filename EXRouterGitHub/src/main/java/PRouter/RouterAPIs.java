@@ -15,23 +15,25 @@ import org.apache.commons.net.telnet.TelnetClient;
 /**
  * @author Adil M Ladadwah
  * 
- *         This class represent APIs for router and include 3 main methods
- *         connect(), sendCommand and disconnect().
+ *         This class represent APIs for router and include main methods
+ *         connect(), sendCommand(), disconnect(), getInstallVersion()
+ *         getVersion(), getIP(), getInterfacesIP(), getInterfaces()
  * 
  */
+
 public class RouterAPIs {
 
+	private String prompt = "#";
 	private static RouterAPIs RouterAPI;
 	public static String ResponseCommand;
-	private String prompt = "#";
+
+	// Create Object of RouterOperation to perform RouterAPIs
 
 	TelnetClient telnetClient = new TelnetClient();
-
 	InputStream inRouter = null;
 	PrintStream outRouter = null;
 	String PassWord = "lab";
 	String HostName = "10.63.10.206";
-
 	RouterOperation router = new RouterOperation(telnetClient, inRouter, outRouter, PassWord, HostName);
 
 	private RouterAPIs() {
@@ -43,6 +45,7 @@ public class RouterAPIs {
 	 * instance.
 	 * 
 	 */
+
 	public static RouterAPIs getInstance() {
 		if (RouterAPI == null) {
 			RouterAPI = new RouterAPIs();
@@ -66,13 +69,19 @@ public class RouterAPIs {
 	 * @throws IOException
 	 * 
 	 */
+
 	public void connect(String IP) throws SocketException, IOException {
 		try {
+
+			// Set Host Name and port number to connect to Telnet with data input and output
+
 			int remoteport = 23;
 			router.setHostName(IP);
 			router.getTelnet().connect(router.getHostName(), remoteport);
 			router.setIn(router.getTelnet().getInputStream());
 			router.setOut(new PrintStream(router.getTelnet().getOutputStream()));
+
+			// Entry to Router and Enable Configuration Mode in Router
 
 			readUntil("Password: ", router.getIn());
 			write(router.getPassWord(), router.getOut());
@@ -83,6 +92,7 @@ public class RouterAPIs {
 			write(router.getPassWord(), router.getOut());
 			readUntil(prompt, router.getIn());
 			ResponseCommand = "";
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -168,6 +178,7 @@ public class RouterAPIs {
 	 *            to router
 	 * 
 	 */
+
 	public void write(String value, PrintStream out) {
 		try {
 			out.println(value);
@@ -186,6 +197,7 @@ public class RouterAPIs {
 	 * @param command
 	 * @param router
 	 */
+
 	public void sendCommand(String command) {
 		try {
 			write(command, router.getOut());
@@ -203,6 +215,7 @@ public class RouterAPIs {
 	 * 
 	 * @param router
 	 */
+
 	public void disconnect() {
 		try {
 			router.getTelnet().disconnect();
@@ -211,34 +224,71 @@ public class RouterAPIs {
 		}
 	}
 
+	/**
+	 * This function represent method to get Version of Router
+	 * 
+	 * @return this Version
+	 */
+
 	public String getVersion() {
 
 		ResponseCommand = "";
+
+		// Send Command for router to show Version version of Router
 		sendCommand("sh Version");
 
 		return ResponseCommand;
 	}
 
+	/**
+	 * This function represent method to get type software version of Router
+	 * 
+	 * @return this type software version
+	 */
+
 	public String getInstallVersion() {
 
 		ResponseCommand = "";
+
+		// Send Command for router to show Version version of Router
+		// GET type software version of Router from Response
+
 		sendCommand("sh Version");
 		String Response[] = ResponseCommand.split("-", 2);
 		System.out.println(Response[0]);
 		return Response[0].substring(11);
 	}
 
+	/**
+	 * This function represent method to get configuration Running for router
+	 * 
+	 * @return this configuration
+	 */
+
 	public String getConfigRunning() {
+
 		RouterAPIs.ResponseCommand = "";
+
+		// Send Command for router to show configuration Running of Router
 		sendCommand("sh Run");
 
 		return ResponseCommand;
 	}
 
+	/**
+	 * This function represent method to get List interface in router
+	 * 
+	 * @return this List
+	 */
+
 	public List<String> getInterfaces() {
 
 		ResponseCommand = "";
+
+		// Send Command for router to show IP interface brief of Router
 		sendCommand("show ip interface brief");
+
+		// GET String interfaces of Router from Response
 		ResponseCommand = ResponseCommand.replaceAll("( )+", " ");
 		String[] RCommand1 = ResponseCommand.split("\n");
 
@@ -254,6 +304,7 @@ public class RouterAPIs {
 			Int_IP = Int_IP + "\n";
 		}
 
+		// Split String interfaces to List of Interfaces
 		String[] SInt = Int_IP.split("\n");
 		List<String> Interfaces = new ArrayList<>();
 
@@ -263,11 +314,22 @@ public class RouterAPIs {
 		return Interfaces;
 	}
 
-	public Map<String, String> getInterfacesIP() {
+	/**
+	 * This function represent method to get List IP in router
+	 * 
+	 * @return THis List
+	 */
+
+	public List<String> getIP() {
 
 		ResponseCommand = "";
+
+		// Send Command for router to show IP interface brief of Router
+
 		sendCommand("show ip interface brief");
-		// Get the response and get from it Interfaces and IP
+
+		// GET String of Interfaces and IP of Router from Response
+
 		RouterAPIs.ResponseCommand = RouterAPIs.ResponseCommand.replaceAll("( )+", " ");
 		String[] RCommand1 = RouterAPIs.ResponseCommand.split("\n");
 
@@ -286,9 +348,58 @@ public class RouterAPIs {
 			Int_IP = Int_IP + "\n";
 		}
 
+		// Split String interfaces & IP to List of Interfaces & List of IPs
+
+		String[] SInt_IP = Int_IP.split("\n");
+		String[] INTER_IP = new String[2];
+		List<String> IP = new ArrayList<>();
+		for (int i = 0; i < SInt_IP.length; i++) {
+			INTER_IP = SInt_IP[i].split(" ", 2);
+			IP.add(INTER_IP[1]);
+
+		}
+
+		return IP;
+
+	}
+
+	/**
+	 * This function represent method to get List interface mapping with List IP in
+	 * router
+	 * 
+	 * @return this Mapping
+	 */
+
+	public Map<String, String> getInterfacesIP() {
+
+		ResponseCommand = "";
+
+		// Send Command for router to show IP interface brief of Router
+		sendCommand("show ip interface brief");
+
+		// GET String of Interfaces and IP of Router from Response
+		RouterAPIs.ResponseCommand = RouterAPIs.ResponseCommand.replaceAll("( )+", " ");
+		String[] RCommand1 = RouterAPIs.ResponseCommand.split("\n");
+
+		String Int_IP = "";
+		for (int i = 2; i < RCommand1.length - 1; i++) {
+			int n = 0;
+			for (int j = 0; i < RCommand1[i].length(); j++) {
+
+				if (RCommand1[i].charAt(j) == ' ' && n == 1)
+					break;
+				else if (RCommand1[i].charAt(j) == ' ' && n == 0)
+					n = 1;
+
+				Int_IP = Int_IP + RCommand1[i].charAt(j);
+			}
+			Int_IP = Int_IP + "\n";
+		}
+
+		// Split String interfaces & IP to List of Interfaces & List of IPs
 		String[] SInt_IP = Int_IP.split("\n");
 
-		// Split between interface and IP and Create Hash Map
+		// Mapping between interface and IP to Create Hash Map
 		String[] Interface = new String[SInt_IP.length];
 		String[] IP = new String[SInt_IP.length];
 		String[] INTER_IP = new String[2];
@@ -305,54 +416,10 @@ public class RouterAPIs {
 			hmap.put(Interface[i], IP[i]);
 		}
 
-		// Convert Hash map for gsonObject and convert it to String
+		// Convert Hash map for map object with entities ordered alphabetically
 		Map<String, String> map = new TreeMap<String, String>(hmap);
 
 		return map;
-
-	}
-
-	public List<String> getIP() {
-		ResponseCommand = "";
-		sendCommand("show ip interface brief");
-		// Get the response and get from it Interfaces and IP
-		RouterAPIs.ResponseCommand = RouterAPIs.ResponseCommand.replaceAll("( )+", " ");
-		String[] RCommand1 = RouterAPIs.ResponseCommand.split("\n");
-
-		String Int_IP = "";
-		for (int i = 2; i < RCommand1.length - 1; i++) {
-			int n = 0;
-			for (int j = 0; i < RCommand1[i].length(); j++) {
-
-				if (RCommand1[i].charAt(j) == ' ' && n == 1)
-					break;
-				else if (RCommand1[i].charAt(j) == ' ' && n == 0)
-					n = 1;
-
-				Int_IP = Int_IP + RCommand1[i].charAt(j);
-			}
-			Int_IP = Int_IP + "\n";
-		}
-
-		String[] SInt_IP = Int_IP.split("\n");
-
-		// Split between interface and IP and Create Hash Map
-
-		String[] INTER_IP = new String[2];
-
-		List<String> IP = new ArrayList<>();
-
-		for (int i = 0; i < SInt_IP.length; i++)
-
-		{
-			INTER_IP = SInt_IP[i].split(" ", 2);
-			IP.add(INTER_IP[1]);
-
-		}
-
-		// Convert Hash map for gsonObject and convert it to String
-
-		return IP;
 
 	}
 

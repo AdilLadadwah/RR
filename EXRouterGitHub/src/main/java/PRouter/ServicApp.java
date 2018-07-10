@@ -12,21 +12,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 
+ * @author Adil M Ladadwah
+ *
+ *         This class represent Controller of project and use services to
+ *         connect and send Command for router and get response these commands
+ *         and store information router by ElasticSearch
+ * 
+ */
+
 @RestController
 public class ServicApp {
 
 	@RequestMapping("/")
 	public String index() {
 
-		String Message = "";
-		Message = ServiceMessage();
-		return Message;
+		return "Greetings from Spring Boot!!!";
+
 	}
 
 	/**
-	 * Connect for router By IP
+	 * This service use to connect for router By IP (HostName)
 	 * 
-	 * @return
 	 * @throws SocketException
 	 * @throws IOException
 	 */
@@ -34,15 +42,28 @@ public class ServicApp {
 	@RequestMapping("/Connect/{IP}")
 	public String ConnectIP(@PathVariable String IP) throws SocketException, IOException {
 
+		// Connect to Router by IP with RouterAPIs
 		RouterAPIs.getInstance().connect(IP);
 
 		return "The connection is successfully";
 	}
 
 	/**
-	 * Show Version of Router
+	 * This service use to disconnect for router
 	 * 
-	 * @return
+	 */
+
+	@RequestMapping("/Disconnect")
+	public void Disconnect() {
+
+		// Disconnect from Router by RouterAPIs
+		RouterAPIs.getInstance().disconnect();
+
+	}
+
+	/**
+	 * This service use to show Version of Router
+	 * 
 	 * @throws SocketException
 	 * @throws IOException
 	 */
@@ -50,72 +71,85 @@ public class ServicApp {
 	@RequestMapping("/Version")
 	public String Version() throws SocketException, IOException {
 
-		// RouterAPIs.getInstance().connect();
-		String Respons = RouterAPIs.getInstance().getVersion();
-		// RouterAPIs.getInstance().disconnect();
+		// Get Version of Router from RouterAPIs
+		String Response = RouterAPIs.getInstance().getVersion();
 
-		return Respons;
+		// Return Response Version of Router
+		return Response;
 	}
+
+	/**
+	 * This service use to show software version of Router
+	 * 
+	 * @throws SocketException
+	 * @throws IOException
+	 */
 
 	@RequestMapping("/InstallVersion")
 	public String InstallVersion() throws SocketException, IOException {
 
-		// RouterAPIs.getInstance().connect();
-		String Respons = RouterAPIs.getInstance().getInstallVersion();
-		// RouterAPIs.getInstance().disconnect();
+		// Get Install Version of Router from RouterAPIs
+		String Response = RouterAPIs.getInstance().getInstallVersion();
 
-		return Respons;
+		// Return Response Type Install Version of Router
+		return Response;
 	}
+
+	/**
+	 * This service use to show configuration Running for router
+	 * 
+	 * @throws SocketException
+	 * @throws IOException
+	 */
 
 	@RequestMapping("/ConfigRunning")
 	public String ConfigRunning() throws SocketException, IOException {
 
-		// RouterAPIs.getInstance().connect();
-		String Respons = RouterAPIs.getInstance().getConfigRunning();
-		// RouterAPIs.getInstance().disconnect();
+		// Get Configuration Running of Router from RouterAPIs
+		String Response = RouterAPIs.getInstance().getConfigRunning();
 
-		return Respons;
+		// Return Response Configuration Running of Router
+		return Response;
 	}
 
 	/**
-	 * Show Interfaces of router
+	 * This service use to show Interfaces of router
 	 * 
 	 * @return
 	 * @throws SocketException
 	 * @throws IOException
 	 */
+
 	@RequestMapping("/Interfaces")
 	public List<String> Interfaces() throws SocketException, IOException {
 
-		// Send command for router
-		// RouterAPIs.getInstance().connect();
-
+		// Get List Interfaces of Router from RouterAPIs
 		List<String> Interfaces = RouterAPIs.getInstance().getInterfaces();
-		// RouterAPIs.getInstance().disconnect();
 
-		// Get the response and get from it Interfaces and IP
-
+		// Return Response List Interfaces of Router
 		return Interfaces;
 	}
+
+	/**
+	 * This service use to show IPs of router
+	 * 
+	 * @throws SocketException
+	 * @throws IOException
+	 */
 
 	@RequestMapping("/IP")
 	public List<String> IP() throws SocketException, IOException {
 
-		// Send command for router
-		// RouterAPIs.getInstance().connect();
-
+		// Get List IPs of Router from RouterAPIs
 		List<String> IP = RouterAPIs.getInstance().getIP();
-		// RouterAPIs.getInstance().disconnect();
 
-		// Get the response and get from it Interfaces and IP
-
+		// Return Response List IPs of Router
 		return IP;
 	}
 
 	/**
-	 * Show Version of Interfaces and their IP
+	 * This service use to show Version of Interfaces and their IP
 	 * 
-	 * @return
 	 * @throws SocketException
 	 * @throws IOException
 	 */
@@ -123,20 +157,17 @@ public class ServicApp {
 	@RequestMapping("/IntIP")
 	public Map<String, String> Interfaces_IP() throws SocketException, IOException {
 
-		// Send command for router
-		// RouterAPIs.getInstance().connect();
+		// Get List Interfaces mapping with theirs IPs of Router from RouterAPIs
 		Map<String, String> map = RouterAPIs.getInstance().getInterfacesIP();
-		// RouterAPIs.getInstance().disconnect();
 
+		// Return Response Interfaces mapping with IPs
 		return map;
 	}
 
 	/**
-	 * Add IP address for interface of router
+	 * This service use to change or add IP address for interface of router and
+	 * update changes on database by ElasticSearch
 	 * 
-	 * @return
-	 * 
-	 * @return
 	 * @throws SocketException
 	 * @throws IOException
 	 * @throws ExecutionException
@@ -147,15 +178,19 @@ public class ServicApp {
 	public String addIP_Int(@RequestBody String Interface)
 			throws SocketException, IOException, InterruptedException, ExecutionException {
 
+		String addResponse = " ";
 		RouterAPIs.ResponseCommand = "";
 
+		// Get List Interfaces mapping with theirs IPs of Router from RouterAPI
 		Interfaces_IP();
-		String addResponse = " ";
+
 		addResponse = addResponse + RouterAPIs.ResponseCommand + "\n";
 		RouterAPIs.ResponseCommand = "";
 
+		// Get RequestBody and Split to Name Interface, Address & SubMask
 		String[] Inter = Interface.split(" ");
 
+		// Send Command for router to change Or add this Interface with IP
 		RouterAPIs.getInstance().sendCommand("config t");
 		RouterAPIs.getInstance().sendCommand("int " + Inter[0]);
 		RouterAPIs.getInstance().sendCommand("ip address " + Inter[1] + " " + Inter[2]);
@@ -164,30 +199,48 @@ public class ServicApp {
 		RouterAPIs.getInstance().sendCommand("exit");
 
 		addResponse = addResponse + RouterAPIs.ResponseCommand + "\n";
+
+		// Get List Interfaces mapping with theirs IPs of Router from RouterAPI
 		Interfaces_IP();
 		addResponse = addResponse + RouterAPIs.ResponseCommand + "\n";
 
+		// Update these changes on database by ElasticSearch
 		Elasticsearch.getInstance().update();
 
+		// Return Response List Interfaces mapping with IPs before and after change
 		return addResponse;
 	}
 
-	public String ServiceMessage() {
-
-		return "Greetings from Spring Boot!!!";
-
-	}
+	/**
+	 * This service use to insert object of Router and its informations from router
+	 * by TelNet on database by ElasticSearch
+	 * 
+	 * @throws SocketException
+	 * @throws IOException
+	 */
 
 	@RequestMapping("/Insert")
 	public String insert() throws SocketException, IOException {
 
+		// Insert object of Router and its informations on database
+		// Get Directly Informations from Router
 		Elasticsearch.getInstance().insert();
 
 		return "The Insertion  Is Successfully";
 	}
 
+	/**
+	 * This service use to create object of Router from URL path print its
+	 * informations
+	 * 
+	 * 
+	 * @param router
+	 */
+
 	@RequestMapping("/InsertRouter")
 	public void InsertRouter(Router router) {
+
+		// Get Object of Router from URL Path and print its information
 
 		System.out.println(router.getRouterName());
 		System.out.println(router.getIP());
