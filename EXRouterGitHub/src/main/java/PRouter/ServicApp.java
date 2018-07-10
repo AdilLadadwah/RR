@@ -53,36 +53,33 @@ public class ServicApp {
 	public String Version() throws SocketException, IOException {
 
 		// RouterAPIs.getInstance().connect();
-		RouterAPIs.ResponseCommand = "";
-		RouterAPIs.getInstance().sendCommand("sh Version");
+		String Respons = RouterAPIs.getInstance().getVersion();
 		// RouterAPIs.getInstance().disconnect();
 
-		return RouterAPIs.ResponseCommand;
+		return Respons;
 	}
 
+	
 	@RequestMapping("/InstallVersion")
 	public String InstallVersion() throws SocketException, IOException {
 
 		// RouterAPIs.getInstance().connect();
-		RouterAPIs.ResponseCommand = "";
-		RouterAPIs.getInstance().sendCommand("sh Version");
+		String Respons = RouterAPIs.getInstance().getInstallVersion();
 		// RouterAPIs.getInstance().disconnect();
 		
-		String Install="";
 
-		return Install;
+
+		return Respons;
 	}
 	
 	@RequestMapping("/ConfigRunning")
 	public String ConfigRunning() throws SocketException, IOException {
 
 		// RouterAPIs.getInstance().connect();
-		RouterAPIs.ResponseCommand = "";
-		RouterAPIs.getInstance().sendCommand("sh Run");
+		String Respons=  RouterAPIs.getInstance().getConfigRunning();
 		// RouterAPIs.getInstance().disconnect();
 		
-
-		return RouterAPIs.ResponseCommand;
+		return Respons;
 	}
 	
 	
@@ -98,35 +95,29 @@ public class ServicApp {
 
 		// Send command for router
 		// RouterAPIs.getInstance().connect();
-		RouterAPIs.ResponseCommand = "";
-		RouterAPIs.getInstance().sendCommand("show ip interface brief");
+
+		List<String> Interfaces=RouterAPIs.getInstance().getInterfaces();
 		// RouterAPIs.getInstance().disconnect();
 
 		// Get the response and get from it Interfaces and IP
-		RouterAPIs.ResponseCommand = RouterAPIs.ResponseCommand.replaceAll("( )+", " ");
-		String[] RCommand1 = RouterAPIs.ResponseCommand.split("\n");
-
-		String Int_IP = "";
-		for (int i = 2; i < RCommand1.length - 1; i++) {
-			for (int j = 0; i < RCommand1[i].length(); j++) {
-
-				if (RCommand1[i].charAt(j) == ' ')
-					break;
-
-				Int_IP = Int_IP + RCommand1[i].charAt(j);
-			}
-			Int_IP = Int_IP + "\n";
-		}
-
-		String[] SInt = Int_IP.split("\n");
-		List<String> Interfaces = new ArrayList<>();
-
-		for (int i = 0; i < SInt.length; i++)
-			Interfaces.add(SInt[i]);
-
+		
 		return Interfaces;
 	}
 
+	@RequestMapping("/IP")
+	public List<String> IP() throws SocketException, IOException {
+
+		// Send command for router
+		// RouterAPIs.getInstance().connect();
+
+		List<String> IP=RouterAPIs.getInstance().getIP();
+		// RouterAPIs.getInstance().disconnect();
+
+		// Get the response and get from it Interfaces and IP
+		
+		return IP;
+	}
+	
 	/**
 	 * Show Version of Interfaces and their IP
 	 * 
@@ -140,50 +131,8 @@ public class ServicApp {
 
 		// Send command for router
 		// RouterAPIs.getInstance().connect();
-		RouterAPIs.ResponseCommand = "";
-		RouterAPIs.getInstance().sendCommand("show ip interface brief");
+		Map<String, String> map = RouterAPIs.getInstance().getInterfacesIP();
 		// RouterAPIs.getInstance().disconnect();
-
-		// Get the response and get from it Interfaces and IP
-		RouterAPIs.ResponseCommand = RouterAPIs.ResponseCommand.replaceAll("( )+", " ");
-		String[] RCommand1 = RouterAPIs.ResponseCommand.split("\n");
-
-		String Int_IP = "";
-		for (int i = 2; i < RCommand1.length - 1; i++) {
-			int n = 0;
-			for (int j = 0; i < RCommand1[i].length(); j++) {
-
-				if (RCommand1[i].charAt(j) == ' ' && n == 1)
-					break;
-				else if (RCommand1[i].charAt(j) == ' ' && n == 0)
-					n = 1;
-
-				Int_IP = Int_IP + RCommand1[i].charAt(j);
-			}
-			Int_IP = Int_IP + "\n";
-		}
-
-		String[] SInt_IP = Int_IP.split("\n");
-
-		// Split between interface and IP and Create Hash Map
-		String[] Interface = new String[SInt_IP.length];
-		String[] IP = new String[SInt_IP.length];
-		String[] INTER_IP = new String[2];
-
-		HashMap<String, String> hmap = new HashMap<String, String>();
-
-		for (int i = 0; i < SInt_IP.length; i++)
-
-		{
-			INTER_IP = SInt_IP[i].split(" ", 2);
-			Interface[i] = INTER_IP[0];
-			IP[i] = INTER_IP[1];
-
-			hmap.put(Interface[i], IP[i]);
-		}
-
-		// Convert Hash map for gsonObject and convert it to String
-		Map<String, String> map = new TreeMap<String, String>(hmap);
 
 		return map;
 	}
@@ -230,4 +179,14 @@ public class ServicApp {
 
 	}
 
+	@RequestMapping("/insert")
+	public String insert() throws SocketException, IOException {
+
+		Elasticsearch.getInstance().insert();
+		
+		return "Good";
+	}
+	
+	
+	
 }

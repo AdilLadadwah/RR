@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.net.telnet.TelnetClient;
 
@@ -21,12 +26,13 @@ public class RouterAPIs {
 	private String prompt = "#";
 
 	TelnetClient telnetClient = new TelnetClient();
+
 	InputStream inRouter = null;
 	PrintStream outRouter = null;
 	String PassWord = "lab";
-	String HostName = "";
+	String HostName = "10.63.10.206";
 
-	Router router = new Router(telnetClient, inRouter, outRouter, PassWord, HostName);
+	RouterOperation router = new RouterOperation(telnetClient, inRouter, outRouter, PassWord, HostName);
 
 	private RouterAPIs() {
 
@@ -42,6 +48,10 @@ public class RouterAPIs {
 			RouterAPI = new RouterAPIs();
 		}
 		return RouterAPI;
+	}
+	
+	public RouterOperation getRouterOperation() {
+		return router;
 	}
 
 	/**
@@ -199,6 +209,149 @@ public class RouterAPIs {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public String getVersion() {
+
+		ResponseCommand = "";
+		sendCommand("sh Version");
+
+		return ResponseCommand;
+	}
+
+	public String getInstallVersion() {
+
+		ResponseCommand = "";
+		sendCommand("sh Version");
+		return ResponseCommand;
+	}
+
+	public String getConfigRunning() {
+		RouterAPIs.ResponseCommand = "";
+		sendCommand("sh Run");
+
+		return ResponseCommand;
+	}
+
+	public List<String> getInterfaces() {
+
+		ResponseCommand = "";
+		sendCommand("show ip interface brief");
+		ResponseCommand = ResponseCommand.replaceAll("( )+", " ");
+		String[] RCommand1 = ResponseCommand.split("\n");
+
+		String Int_IP = "";
+		for (int i = 2; i < RCommand1.length - 1; i++) {
+			for (int j = 0; i < RCommand1[i].length(); j++) {
+
+				if (RCommand1[i].charAt(j) == ' ')
+					break;
+
+				Int_IP = Int_IP + RCommand1[i].charAt(j);
+			}
+			Int_IP = Int_IP + "\n";
+		}
+
+		String[] SInt = Int_IP.split("\n");
+		List<String> Interfaces = new ArrayList<>();
+
+		for (int i = 0; i < SInt.length; i++)
+			Interfaces.add(SInt[i]);
+
+		return Interfaces;
+	}
+
+	public Map<String, String> getInterfacesIP() {
+
+		ResponseCommand = "";
+		sendCommand("show ip interface brief");
+		// Get the response and get from it Interfaces and IP
+		RouterAPIs.ResponseCommand = RouterAPIs.ResponseCommand.replaceAll("( )+", " ");
+		String[] RCommand1 = RouterAPIs.ResponseCommand.split("\n");
+
+		String Int_IP = "";
+		for (int i = 2; i < RCommand1.length - 1; i++) {
+			int n = 0;
+			for (int j = 0; i < RCommand1[i].length(); j++) {
+
+				if (RCommand1[i].charAt(j) == ' ' && n == 1)
+					break;
+				else if (RCommand1[i].charAt(j) == ' ' && n == 0)
+					n = 1;
+
+				Int_IP = Int_IP + RCommand1[i].charAt(j);
+			}
+			Int_IP = Int_IP + "\n";
+		}
+
+		String[] SInt_IP = Int_IP.split("\n");
+
+		// Split between interface and IP and Create Hash Map
+		String[] Interface = new String[SInt_IP.length];
+		String[] IP = new String[SInt_IP.length];
+		String[] INTER_IP = new String[2];
+
+		HashMap<String, String> hmap = new HashMap<String, String>();
+
+		for (int i = 0; i < SInt_IP.length; i++)
+
+		{
+			INTER_IP = SInt_IP[i].split(" ", 2);
+			Interface[i] = INTER_IP[0];
+			IP[i] = INTER_IP[1];
+
+			hmap.put(Interface[i], IP[i]);
+		}
+
+		// Convert Hash map for gsonObject and convert it to String
+		Map<String, String> map = new TreeMap<String, String>(hmap);
+
+		return map;
+
+	}
+
+	public List<String> getIP() {
+		ResponseCommand = "";
+		sendCommand("show ip interface brief");
+		// Get the response and get from it Interfaces and IP
+		RouterAPIs.ResponseCommand = RouterAPIs.ResponseCommand.replaceAll("( )+", " ");
+		String[] RCommand1 = RouterAPIs.ResponseCommand.split("\n");
+
+		String Int_IP = "";
+		for (int i = 2; i < RCommand1.length - 1; i++) {
+			int n = 0;
+			for (int j = 0; i < RCommand1[i].length(); j++) {
+
+				if (RCommand1[i].charAt(j) == ' ' && n == 1)
+					break;
+				else if (RCommand1[i].charAt(j) == ' ' && n == 0)
+					n = 1;
+
+				Int_IP = Int_IP + RCommand1[i].charAt(j);
+			}
+			Int_IP = Int_IP + "\n";
+		}
+
+		String[] SInt_IP = Int_IP.split("\n");
+
+		// Split between interface and IP and Create Hash Map
+
+		String[] INTER_IP = new String[2];
+
+		List<String> IP = new ArrayList<>();
+
+		for (int i = 0; i < SInt_IP.length; i++)
+
+		{
+			INTER_IP = SInt_IP[i].split(" ", 2);
+			IP.add(INTER_IP[1]);
+
+		}
+
+		// Convert Hash map for gsonObject and convert it to String
+
+		return IP;
+
 	}
 
 }

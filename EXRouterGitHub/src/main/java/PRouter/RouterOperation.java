@@ -13,7 +13,7 @@ import org.apache.commons.net.telnet.TelnetClient;
  *         router
  *
  */
-public class Router {
+public class RouterOperation {
 
 	private TelnetClient telnet = new TelnetClient();
 	private InputStream in;
@@ -31,7 +31,7 @@ public class Router {
 	 * @param hostName
 	 * 
 	 */
-	public Router() {
+	public RouterOperation() {
 
 	}
 
@@ -46,7 +46,7 @@ public class Router {
 	 * @param hostName
 	 * 
 	 */
-	public Router(TelnetClient telnet, InputStream in, PrintStream out, String passWord, String hostName) {
+	public RouterOperation(TelnetClient telnet, InputStream in, PrintStream out, String passWord, String hostName) {
 
 		this.telnet = telnet;
 		this.in = in;
