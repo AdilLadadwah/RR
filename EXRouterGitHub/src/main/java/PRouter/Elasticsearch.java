@@ -78,9 +78,9 @@ public class Elasticsearch {
 		// DeleteResponse responsee = client.prepareDelete("router", "RouterAPIs", "1").get();
 
 		// Use to search all document in index
-		// QueryBuilder matchAllQuery = QueryBuilders.matchAllQuery();
-		// SearchResponse resp = client.prepareSearch("router").setTypes("RouterAPIs").setQuery(matchAllQuery).get();
-		// System.out.println(resp);
+		QueryBuilder matchAllQuery = QueryBuilders.matchAllQuery();
+		SearchResponse resp = client.prepareSearch("router").setTypes("RouterAPIs").setQuery(matchAllQuery).get();
+		System.out.println(resp);
 
 	}
 	
