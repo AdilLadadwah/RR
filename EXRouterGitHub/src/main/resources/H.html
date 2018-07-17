@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Table Examples</title>
+<style>
+table {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+}
+
+td, th {
+	border: 1px solid red;
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(odd) {
+	background-color: gold;
+}
+
+tr:nth-child(even) {
+	background-color: powderblue;
+}
+
+.city {
+	background-color: tomato;
+	color: white;
+	padding: 10px;
+}
+
+#myHeader {
+	background-color: lightblue;
+	color: black;
+	padding: 20px;
+	text-align: center;
+}
+</style>
+</head>
+<body style="background-color: White;">
+
+	<h2>HTML Table</h2>
+	<table>
+
+		<caption
+			style="text-align: center; color: yellow; font-size: 20px; background-color: red;"
+			title="I'm a Table">Table</caption>
+		<tr>
+			<th><img
+				src="C:\Users\Adil%20M%20Ladadwah\Documents\E_HTML\B.png"
+				alt="No Image" width="100" height="40"></th>
+			<th><a style="color: green" href="https://ritaj.birzeit.edu"
+				target="_blank" title="Go to Ritaj">This is a link Ritaj</a></th>
+			<th><a style="color: rgb(220, 120, 70)"
+				href="C:\Users\Adil%20M%20Ladadwah\Documents\E_HTML\A.png"
+				target="_blank">This is a link Image</a></th>
+		</tr>
+		<tr>
+			<td><a href="https://ritaj.birzeit.edu" target="_blank"> <img
+					src="C:\Users\Adil%20M%20Ladadwah\Documents\E_HTML\Ritaj.GIF"
+					alt="HTML tutorial" style="width: 60px; height: 30px; border: 0"
+					title="Go to Ritaj"></a></td>
+			<td><p style="color: red">
+					I am a paragraph <a href="#B"> Jump to another place </a>
+				</p></td>
+			<td><button>Click me</button></td>
+		</tr>
+		<tr>
+			<td><h1
+					style="font-size: 20px; background-color: rgb(255, 99, 71);">My
+					First Heading</h1></td>
+			<td><ol>
+					<li>Coffee</li>
+					<li><img
+						src="C:\Users\Adil%20M%20Ladadwah\Documents\E_HTML\A.png"
+						alt="HTML tutorial" style="width: 60px; height: 10px; border: 0"></li>
+					<li>Tea</li>
+				</ol></td>
+			<td><hr></td>
+		</tr>
+
+		<tr>
+			<td><h2 id="B"
+					style="text-align: center; color: blue; font-size: 20px; background-color: yellow"
+					title="I'm a header">The title Attribute</h2></td>
+			<td><p style="border: 2px solid orange;"
+					title='John "ShotGun" Nelson'>John with double quotes</p></td>
+			<td><pre style="font-family: verdana">
+    <i>My Bonnie lies</i> over the ocean.
+    Oh, bring <sub> back </sub> my <sup>Bonnie</sup> to me.
+    </pre></td>
+		</tr>
+
+		<!-- This is a comment body style="background-image:url('B.png')" -->
+
+		<tr>
+			<td><p>
+					The <abbr title="World Health Organization">WHO</abbr> was founded
+					in 1948.
+				</p></td>
+			<td><bdo dir="rtl">This line will be written from right to
+					left #</bdo></td>
+			<td style="background-color: green"></td>
+		</tr>
+
+		<tr>
+			<td><h2>Using The id Attribute in JavaScript</h2>
+				<p>JavaScript can access an element with a specified id by using
+					the getElementById() method:</p>
+
+				<h3 id="myHeader">Hello World!</h3>
+				<button onclick="displayResult()">Change text</button> <script>
+					function displayResult() {
+						document.getElementById("myHeader").innerHTML = "Have a nice day!";
+						document.getElementById("myHeader").style.background = "yellow";
+					}
+				</script></td>
+
+			<td><h2>Using The class Attribute in JavaScript</h2>
+				<p>Click the button, to hide all elements with the class name
+					"city", with JavaScript:</p>
+
+				<button onclick="myFunction()">Change Colors elements</button>
+
+				<h2 class="city">London</h2>
+				<p>London is the capital of England.</p>
+
+				<h2 class="city">Paris</h2>
+				<p>Paris is the capital of France.</p>
+
+				<h2 class="city">Tokyo</h2>
+				<p>Tokyo is the capital of Japan.</p> <script>
+					function myFunction() {
+						var x = document.getElementsByClassName("city");
+						for (var i = 0; i < x.length; i++) {
+							x[i].style.color = "blue";
+							x[i].style.background = "yellow";
+						}
+					}
+				</script></td>
+			<td>Canada</td>
+		</tr>
+
+		<tr>
+			<td>Magazzini Alimentari Riuniti</td>
+			<td>Giovanni Rovelli</td>
+			<td>Italy</td>
+		</tr>
+
+
+	</table>
+
+
+
+
+</body>
+</html>
