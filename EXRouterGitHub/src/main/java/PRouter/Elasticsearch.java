@@ -3,6 +3,7 @@ package PRouter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.elasticsearch.action.delete.DeleteResponse;
@@ -65,14 +66,13 @@ public class Elasticsearch {
 				.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
 
 		// Create index and insert document information Router
-		XContentBuilder builder = XContentFactory.jsonBuilder();
+		/*XContentBuilder builder = XContentFactory.jsonBuilder();
 		IndexResponse response = client.prepareIndex("router", "RouterAPIs", "1").setSource(builder.startObject()
-				.field("Router name", RouterAPIs.getInstance().getRouterOperation().getHostName())
-				.field("IP", RouterAPIs.getInstance().getIP().toString())
-				.field("Interface IP", RouterAPIs.getInstance().getInterfacesIP().toString())
-				.field("Show version", RouterAPIs.getInstance().getVersion())
-				.field("Install IOS version", RouterAPIs.getInstance().getInstallVersion()).field("Date", new Date())
-				.field("Running Configuration", RouterAPIs.getInstance().getConfigRunning()).endObject()).get();
+				.field("HostName", RouterAPIs.getInstance().getRouterOperation().getHostName())
+				.field("Date", new Date().toString())
+				.field("Version", RouterAPIs.getInstance().getInstallVersion())
+				.field("ConfigRunning", RouterAPIs.getInstance().getConfigRunning())
+				.field("InterfaceIP", RouterAPIs.getInstance().getInterfacesIP().toString()).endObject()).get();*/
 
 		// Use to delete document by id
 		// DeleteResponse responsee = client.prepareDelete("router", "RouterAPIs", "1").get();
@@ -126,5 +126,20 @@ public class Elasticsearch {
 		GetResponse res2 = client.prepareGet("router", "RouterAPIs", "1").get();
 		System.out.println(res2.getIndex() + " & " + res2.getType() + " & " + res2.getId() + " & " + res2.getVersion());
 		System.out.println(res2.getSourceAsString());
+	}
+	
+	
+	public Map<String, Object> getData() throws IOException, InterruptedException, ExecutionException {
+
+		// Connect to server database ElasticSearch
+		client = TransportClient.builder().build()
+				.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
+
+		GetResponse res1 = client.prepareGet("router", "RouterAPIs", "1").get();
+	
+		Map<String, Object> map =res1.getSourceAsMap();
+
+		return map;
+		
 	}
 }

@@ -33,7 +33,7 @@ public class RouterAPIs {
 	InputStream inRouter = null;
 	PrintStream outRouter = null;
 	String PassWord = "lab";
-	String HostName = "10.63.10.206";
+	String HostName = "";
 	RouterOperation router = new RouterOperation(telnetClient, inRouter, outRouter, PassWord, HostName);
 
 	private RouterAPIs() {
@@ -65,12 +65,13 @@ public class RouterAPIs {
 	 * 
 	 * @param Router
 	 *            Object
+	 * @return 
 	 * @throws SocketException
 	 * @throws IOException
 	 * 
 	 */
 
-	public void connect(String IP) throws SocketException, IOException {
+	public boolean connect(String IP) throws SocketException, IOException {
 		try {
 
 			// Set Host Name and port number to connect to Telnet with data input and output
@@ -92,9 +93,12 @@ public class RouterAPIs {
 			write(router.getPassWord(), router.getOut());
 			readUntil(prompt, router.getIn());
 			ResponseCommand = "";
+			
+			return true;
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 
 	}
@@ -272,7 +276,7 @@ public class RouterAPIs {
 		// Send Command for router to show configuration Running of Router
 		sendCommand("sh Run");
 
-		return ResponseCommand;
+		return ResponseCommand.substring(7, ResponseCommand.length()-11);
 	}
 
 	/**

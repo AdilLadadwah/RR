@@ -2,17 +2,24 @@ package PRouter;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
 import javax.json.Json;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -42,12 +49,13 @@ public class ServicApp {
 	 */
 
 	@RequestMapping("/Connect/{IP}")
-	public String ConnectIP(@PathVariable String IP) throws SocketException, IOException {
+	public boolean ConnectIP(@PathVariable String IP) throws SocketException, IOException {
 
 		// Connect to Router by IP with RouterAPIs
-		RouterAPIs.getInstance().connect(IP);
+		
+		boolean message = RouterAPIs.getInstance().connect(IP);
 
-		return "The connection is successfully";
+		return message;
 	}
 
 	/**
@@ -157,13 +165,13 @@ public class ServicApp {
 	 */
 
 	@RequestMapping("/IntIP")
-	public Map<String, String> Interfaces_IP() throws SocketException, IOException {
+	public String Interfaces_IP() throws SocketException, IOException {
 
 		// Get List Interfaces mapping with theirs IPs of Router from RouterAPIs
 		Map<String, String> map = RouterAPIs.getInstance().getInterfacesIP();
 
 		// Return Response Interfaces mapping with IPs
-		return map;
+		return map.toString();
 	}
 
 	/**
@@ -237,20 +245,71 @@ public class ServicApp {
 	 * 
 	 * 
 	 * @param router
+	 * @return
 	 */
 
-	@RequestMapping("/InsertRouter")
-	public void InsertRouter(Router router) {
+	@RequestMapping("/Router")
+	public String Router() {
 
 		// Get Object of Router from URL Path and print its information
 
-		System.out.println(router.getRouterName());
-		System.out.println(router.getIP());
-		System.out.println(router.getInterfaceIP());
-		System.out.println(router.getVersion());
-		System.out.println(router.getInstallVersion());
-		System.out.println(router.getDate());
-		System.out.println(router.getConfigRunning());
+		String Str = "";
+
+		Str = RouterAPIs.getInstance().getRouterOperation().getHostName() + "&&";
+		Str = Str + new Date().toString() + "&&";
+		Str = Str + RouterAPIs.getInstance().getInstallVersion() + "&&";
+		Str = Str + RouterAPIs.getInstance().getConfigRunning() + "&&";
+		String StrIP = RouterAPIs.getInstance().getInterfacesIP().toString();
+		Str = Str + StrIP.substring(1, StrIP.length()-1);
+
+	
+		return Str;
+
+	}
+
+	@RequestMapping("/dataRouter")
+	public String dataRouter() throws IOException, InterruptedException, ExecutionException {
+
+		// Get Object of Router from URL Path and print its information
+
+		JSONObject json = new JSONObject();
+		JSONArray arr = new JSONArray();
+		
+		Map<String, Object> map=Elasticsearch.getInstance().getData();
+		
+		json.put("HostName", map.get("HostName").toString());
+		json.put("Date", map.get("Date").toString());
+		json.put("Version", map.get("Version").toString());
+		json.put("ConfigRunning", map.get("ConfigRunning").toString());
+		json.put("InterfaceIP", map.get("InterfaceIP").toString().substring(1,map.get("InterfaceIP").toString().length()-1));
+		
+		arr.put(json);
+		 
+		/*JSONObject json = new JSONObject();
+
+		json.put("HostName", RouterAPIs.getInstance().getRouterOperation().getHostName().toString());
+		json.put("Date", new Date().toString());
+		json.put("Version", RouterAPIs.getInstance().getInstallVersion().toString());
+		json.put("ConfigRunning", RouterAPIs.getInstance().getConfigRunning());
+		String StrIP = RouterAPIs.getInstance().getInterfacesIP().toString();
+		json.put("InterfaceIP", StrIP.substring(1, StrIP.length()-1));
+		
+		JSONArray arr = new JSONArray();
+		
+		arr.put(json);
+		
+		/*JSONObject json1 = new JSONObject();
+		
+		json1.put("HostName", "A1");
+		json1.put("Date","B1" );
+		json1.put("Version","C1" );
+		json1.put("ConfigRunning","D1" );
+		json1.put("InterfaceIP", "E1");
+
+		arr.put(json1);
+*/
+		
+		return arr.toString();
 
 	}
 
