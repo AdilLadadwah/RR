@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 //import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
-//import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
@@ -69,17 +69,15 @@ public class Elasticsearch {
 				.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
 
 		// Create index and insert document information Router
-		/*XContentBuilder builder = XContentFactory.jsonBuilder();
-		 * String StrIP = RouterAPIs.getInstance().getInterfacesIP().toString();
+		XContentBuilder builder = XContentFactory.jsonBuilder();
+		String StrIP = RouterAPIs.getInstance().getInterfacesIP().toString();
 		IndexResponse response = client.prepareIndex("router", "RouterAPIs", "3").setSource(builder.startObject()
 				.field("HostName", RouterAPIs.getInstance().getRouterOperation().getHostName())
-				.field("Date", new Date().toString())
-				.field("Version", RouterAPIs.getInstance().getInstallVersion())
+				.field("Date", new Date().toString()).field("Version", RouterAPIs.getInstance().getInstallVersion())
 				.field("ConfigRunning", RouterAPIs.getInstance().getConfigRunning())
-				.field("InterfaceIP", StrIP.substring(1, StrIP.length()-1)).endObject()).get();*/
+				.field("InterfaceIP", StrIP.substring(1, StrIP.length() - 1)).endObject()).get();
 
-
-	
+		System.out.println(response);
 		
 		
 	}
