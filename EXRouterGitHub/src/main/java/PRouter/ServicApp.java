@@ -3,14 +3,11 @@ package PRouter;
 import java.io.IOException;
 import java.net.SocketException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
-import javax.json.Json;
-
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.google.gson.JsonObject;
 
 /**
  * 
@@ -215,7 +210,7 @@ public class ServicApp {
 		addResponse = addResponse + RouterAPIs.ResponseCommand + "\n";
 
 		// Update these changes on database by ElasticSearch
-		Elasticsearch.getInstance().update();
+		// Elasticsearch.getInstance().update();
 
 		// Return Response List Interfaces mapping with IPs before and after change
 		return addResponse;
@@ -260,9 +255,8 @@ public class ServicApp {
 		Str = Str + RouterAPIs.getInstance().getInstallVersion() + "&&";
 		Str = Str + RouterAPIs.getInstance().getConfigRunning() + "&&";
 		String StrIP = RouterAPIs.getInstance().getInterfacesIP().toString();
-		Str = Str + StrIP.substring(1, StrIP.length()-1);
+		Str = Str + StrIP.substring(1, StrIP.length() - 1);
 
-	
 		return Str;
 
 	}
@@ -273,42 +267,25 @@ public class ServicApp {
 		// Get Object of Router from URL Path and print its information
 
 		JSONObject json = new JSONObject();
-		JSONArray arr = new JSONArray();
-		
-		Map<String, Object> map=Elasticsearch.getInstance().getData();
-		
-		json.put("HostName", map.get("HostName").toString());
-		json.put("Date", map.get("Date").toString());
-		json.put("Version", map.get("Version").toString());
-		json.put("ConfigRunning", map.get("ConfigRunning").toString());
-		json.put("InterfaceIP", map.get("InterfaceIP").toString().substring(1,map.get("InterfaceIP").toString().length()-1));
-		
-		arr.put(json);
-		 
-		/*JSONObject json = new JSONObject();
 
 		json.put("HostName", RouterAPIs.getInstance().getRouterOperation().getHostName().toString());
 		json.put("Date", new Date().toString());
 		json.put("Version", RouterAPIs.getInstance().getInstallVersion().toString());
 		json.put("ConfigRunning", RouterAPIs.getInstance().getConfigRunning());
 		String StrIP = RouterAPIs.getInstance().getInterfacesIP().toString();
-		json.put("InterfaceIP", StrIP.substring(1, StrIP.length()-1));
-		
-		JSONArray arr = new JSONArray();
-		
-		arr.put(json);
-		
-		/*JSONObject json1 = new JSONObject();
-		
-		json1.put("HostName", "A1");
-		json1.put("Date","B1" );
-		json1.put("Version","C1" );
-		json1.put("ConfigRunning","D1" );
-		json1.put("InterfaceIP", "E1");
+		json.put("InterfaceIP", StrIP.substring(1, StrIP.length() - 1));
 
-		arr.put(json1);
-*/
-		
+		JSONArray arr = new JSONArray();
+		arr.put(json);
+
+		// Get history of data router from ElasticSearch
+		SearchHit[] Hits = Elasticsearch.getInstance().getData();
+
+		for (int i = 0; i < Hits.length; i++) {
+			json = new JSONObject(Hits[i].getSourceAsString());
+			arr.put(json);
+		}
+
 		return arr.toString();
 
 	}

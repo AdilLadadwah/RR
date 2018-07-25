@@ -1,4 +1,5 @@
 package PRouter;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -14,10 +15,14 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * 
@@ -67,21 +72,18 @@ public class Elasticsearch {
 
 		// Create index and insert document information Router
 		/*XContentBuilder builder = XContentFactory.jsonBuilder();
-		IndexResponse response = client.prepareIndex("router", "RouterAPIs", "1").setSource(builder.startObject()
+		 * String StrIP = RouterAPIs.getInstance().getInterfacesIP().toString();
+		IndexResponse response = client.prepareIndex("router", "RouterAPIs", "3").setSource(builder.startObject()
 				.field("HostName", RouterAPIs.getInstance().getRouterOperation().getHostName())
 				.field("Date", new Date().toString())
 				.field("Version", RouterAPIs.getInstance().getInstallVersion())
 				.field("ConfigRunning", RouterAPIs.getInstance().getConfigRunning())
-				.field("InterfaceIP", RouterAPIs.getInstance().getInterfacesIP().toString()).endObject()).get();*/
+				.field("InterfaceIP", StrIP.substring(1, StrIP.length()-1)).endObject()).get();*/
 
-		// Use to delete document by id
-		// DeleteResponse responsee = client.prepareDelete("router", "RouterAPIs", "1").get();
 
-		// Use to search all document in index
-		QueryBuilder matchAllQuery = QueryBuilders.matchAllQuery();
-		SearchResponse resp = client.prepareSearch("router").setTypes("RouterAPIs").setQuery(matchAllQuery).get();
-		System.out.println(resp);
-
+	
+		
+		
 	}
 	
 	/**
@@ -129,17 +131,19 @@ public class Elasticsearch {
 	}
 	
 	
-	public Map<String, Object> getData() throws IOException, InterruptedException, ExecutionException {
+	
+	public SearchHit[] getData() throws IOException, InterruptedException, ExecutionException {
 
-		// Connect to server database ElasticSearch
+
 		client = TransportClient.builder().build()
 				.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
+		
+		QueryBuilder matchAllQuery = QueryBuilders.matchAllQuery();
+		SearchResponse resp = client.prepareSearch("router").setTypes("RouterAPIs").setQuery(matchAllQuery).get();
+		SearchHit[] hits = resp.getHits().getHits();
 
-		GetResponse res1 = client.prepareGet("router", "RouterAPIs", "1").get();
-	
-		Map<String, Object> map =res1.getSourceAsMap();
 
-		return map;
+		return hits;
 		
 	}
 }
