@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -183,37 +182,43 @@ public class ServicApp {
 	public String addIP_Int(@RequestBody String Interface)
 			throws SocketException, IOException, InterruptedException, ExecutionException {
 
-		String addResponse = " ";
-		RouterAPIs.ResponseCommand = "";
-
-		// Get List Interfaces mapping with theirs IPs of Router from RouterAPI
-		Interfaces_IP();
-
-		addResponse = addResponse + RouterAPIs.ResponseCommand + "\n";
-		RouterAPIs.ResponseCommand = "";
-
-		// Get RequestBody and Split to Name Interface, Address & SubMask
-		String[] Inter = Interface.split(" ");
-
-		// Send Command for router to change Or add this Interface with IP
+		Interface = Interface.replaceAll("%2F", "/");
+		String[] Inter = Interface.split("&");
+		
+		Inter[0] = Inter[0].substring(Inter[0].indexOf("=")+1, Inter[0].length());
+		Inter[1] = Inter[1].substring(Inter[1].indexOf("=")+1, Inter[1].length());
+		Inter[2] = Inter[2].substring(Inter[2].indexOf("=")+1, Inter[2].length());
+		
+		System.out.println(Inter[0]);
+		System.out.println(Inter[1]);
+		System.out.println(Inter[2]);
+		System.out.println(Interface);
+		
 		RouterAPIs.getInstance().sendCommand("config t");
 		RouterAPIs.getInstance().sendCommand("int " + Inter[0]);
 		RouterAPIs.getInstance().sendCommand("ip address " + Inter[1] + " " + Inter[2]);
 		RouterAPIs.getInstance().sendCommand("no shutdown");
 		RouterAPIs.getInstance().sendCommand("exit");
 		RouterAPIs.getInstance().sendCommand("exit");
+		
+		JSONObject json = new JSONObject();
 
-		addResponse = addResponse + RouterAPIs.ResponseCommand + "\n";
+		json.put("HostName", RouterAPIs.getInstance().getRouterOperation().getHostName().toString());
+		json.put("Date", new Date().toString());
+		json.put("Version", RouterAPIs.getInstance().getInstallVersion().toString());
+		json.put("ConfigRunning", RouterAPIs.getInstance().getConfigRunning());
+		String StrIP = RouterAPIs.getInstance().getInterfacesIP().toString();
+		json.put("InterfaceIP", StrIP.substring(1, StrIP.length() - 1));
 
-		// Get List Interfaces mapping with theirs IPs of Router from RouterAPI
-		Interfaces_IP();
-		addResponse = addResponse + RouterAPIs.ResponseCommand + "\n";
+		JSONArray arr = new JSONArray();
+		
+		arr.put(json);
+		
 
-		// Update these changes on database by ElasticSearch
-		// Elasticsearch.getInstance().update();
+		return arr.toString();
+		
+		
 
-		// Return Response List Interfaces mapping with IPs before and after change
-		return addResponse;
 	}
 
 	/**
@@ -279,12 +284,13 @@ public class ServicApp {
 		arr.put(json);
 
 		// Get history of data router from ElasticSearch
-		SearchHit[] Hits = Elasticsearch.getInstance().getData();
+		 /*SearchHit[] Hits = Elasticsearch.getInstance().getData();
 
 		for (int i = 0; i < Hits.length; i++) {
 			json = new JSONObject(Hits[i].getSourceAsString());
 			arr.put(json);
-		}
+		}*/
+		
 
 		return arr.toString();
 
